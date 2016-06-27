@@ -1,0 +1,18 @@
+{
+    "version": "1.0.0",
+    "summary": "Trainyard puzzle",
+    "repository": "https://github.com/mlanza/trainyard.git",
+    "license": "BSD3",
+    "source-directories": [
+        "."
+    ],
+    "exposed-modules": [],
+    "dependencies": {
+        "elm-lang/core": "4.0.1 <= v < 5.0.0",
+        "elm-lang/html": "1.0.0 <= v < 2.0.0",
+        "elm-lang/dom": "1.0.0 <= v < 2.0.0",
+        "elm-lang/keyboard": "1.0.0 <= v < 2.0.0",
+        "eskimoblood/elm-color-extra": "2.0.2 <= v < 3.0.3"
+    },
+    "elm-version": "0.17.0 <= v < 0.18.0"
+}

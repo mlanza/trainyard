@@ -1,0 +1,72 @@
+var _eskimoblood$elm_color_extra$Color_Manipulate$rotateHue = F2(
+	function (angle, cl) {
+		var _p0 = _elm_lang$core$Color$toHsl(cl);
+		var hue = _p0.hue;
+		var saturation = _p0.saturation;
+		var lightness = _p0.lightness;
+		var alpha = _p0.alpha;
+		return A4(
+			_elm_lang$core$Color$hsla,
+			hue + _elm_lang$core$Basics$degrees(angle),
+			saturation,
+			lightness,
+			alpha);
+	});
+var _eskimoblood$elm_color_extra$Color_Manipulate$limit = A2(_elm_lang$core$Basics$clamp, 0, 1);
+var _eskimoblood$elm_color_extra$Color_Manipulate$darken = F2(
+	function (offset, cl) {
+		var _p1 = _elm_lang$core$Color$toHsl(cl);
+		var hue = _p1.hue;
+		var saturation = _p1.saturation;
+		var lightness = _p1.lightness;
+		var alpha = _p1.alpha;
+		return A4(
+			_elm_lang$core$Color$hsla,
+			hue,
+			saturation,
+			_eskimoblood$elm_color_extra$Color_Manipulate$limit(lightness - offset),
+			alpha);
+	});
+var _eskimoblood$elm_color_extra$Color_Manipulate$lighten = F2(
+	function (offset, cl) {
+		return A2(_eskimoblood$elm_color_extra$Color_Manipulate$darken, 0 - offset, cl);
+	});
+var _eskimoblood$elm_color_extra$Color_Manipulate$saturate = F2(
+	function (offset, cl) {
+		var _p2 = _elm_lang$core$Color$toHsl(cl);
+		var hue = _p2.hue;
+		var saturation = _p2.saturation;
+		var lightness = _p2.lightness;
+		var alpha = _p2.alpha;
+		return A4(
+			_elm_lang$core$Color$hsla,
+			hue,
+			_eskimoblood$elm_color_extra$Color_Manipulate$limit(saturation + offset),
+			lightness,
+			alpha);
+	});
+var _eskimoblood$elm_color_extra$Color_Manipulate$desaturate = F2(
+	function (offset, cl) {
+		return A2(_eskimoblood$elm_color_extra$Color_Manipulate$saturate, 0 - offset, cl);
+	});
+var _eskimoblood$elm_color_extra$Color_Manipulate$grayscale = function (cl) {
+	return A2(_eskimoblood$elm_color_extra$Color_Manipulate$saturate, -1, cl);
+};
+var _eskimoblood$elm_color_extra$Color_Manipulate$fadeIn = F2(
+	function (offset, cl) {
+		var _p3 = _elm_lang$core$Color$toHsl(cl);
+		var hue = _p3.hue;
+		var saturation = _p3.saturation;
+		var lightness = _p3.lightness;
+		var alpha = _p3.alpha;
+		return A4(
+			_elm_lang$core$Color$hsla,
+			hue,
+			saturation,
+			lightness,
+			_eskimoblood$elm_color_extra$Color_Manipulate$limit(alpha + offset));
+	});
+var _eskimoblood$elm_color_extra$Color_Manipulate$fadeOut = F2(
+	function (offset, cl) {
+		return A2(_eskimoblood$elm_color_extra$Color_Manipulate$fadeIn, 0 - offset, cl);
+	});
