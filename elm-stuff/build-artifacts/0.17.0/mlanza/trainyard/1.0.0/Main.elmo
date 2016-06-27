@@ -1,0 +1,479 @@
+var _mlanza$trainyard$Main$drawLabel = function (letter) {
+	return A2(
+		_elm_lang$html$Html$span,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$style(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						{ctor: '_Tuple2', _0: 'font-size', _1: '1.5em'},
+						{ctor: '_Tuple2', _0: 'padding', _1: '.5em'}
+					]))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text(letter)
+			]));
+};
+var _mlanza$trainyard$Main$always = F2(
+	function (value, f) {
+		return value;
+	});
+var _mlanza$trainyard$Main$unbound = F2(
+	function (_p1, _p0) {
+		var _p2 = _p1;
+		var _p3 = _p0;
+		var _p5 = _p3._1;
+		var _p4 = _p3._0;
+		return (_elm_lang$core$Native_Utils.cmp(_p4, 0) < 0) || ((_elm_lang$core$Native_Utils.cmp(_p5, 0) < 0) || ((_elm_lang$core$Native_Utils.cmp(_p4, _p2._0) > 0) || (_elm_lang$core$Native_Utils.cmp(_p5, _p2._1) > 0)));
+	});
+var _mlanza$trainyard$Main$colored = function (piece) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (coord) {
+			return {
+				ctor: '_Tuple2',
+				_0: function (_) {
+					return _.color;
+				}(piece),
+				_1: coord
+			};
+		},
+		function (_) {
+			return _.coords;
+		}(piece));
+};
+var _mlanza$trainyard$Main$solved = function (model) {
+	var want = _elm_lang$core$Set$fromList(
+		A2(
+			_elm_lang$core$List$concatMap,
+			_mlanza$trainyard$Main$colored,
+			function (_) {
+				return _.solution;
+			}(model)));
+	var have = _elm_lang$core$Set$fromList(
+		A2(
+			_elm_lang$core$List$concatMap,
+			_mlanza$trainyard$Main$colored,
+			A2(
+				_elm_lang$core$List$map,
+				_elm_lang$core$Basics$snd,
+				function (_) {
+					return _.pieces;
+				}(model))));
+	var same = A2(_elm_lang$core$Set$intersect, have, want);
+	return _elm_lang$core$Native_Utils.eq(want, same);
+};
+var _mlanza$trainyard$Main$occupied = function (model) {
+	return A2(
+		_elm_lang$core$List$concatMap,
+		function (_) {
+			return _.coords;
+		},
+		A2(
+			_elm_lang$core$List$map,
+			_elm_lang$core$Basics$snd,
+			function (_) {
+				return _.pieces;
+			}(model)));
+};
+var _mlanza$trainyard$Main$collisions = function (model) {
+	var occ = _mlanza$trainyard$Main$occupied(model);
+	var cnt = _elm_lang$core$List$length(occ);
+	var ucnt = _elm_lang$core$List$length(
+		_elm_lang$core$Set$toList(
+			_elm_lang$core$Set$fromList(occ)));
+	return !_elm_lang$core$Native_Utils.eq(cnt, ucnt);
+};
+var _mlanza$trainyard$Main$breach = function (model) {
+	return _elm_lang$core$Basics$not(
+		_elm_lang$core$List$isEmpty(
+			A2(
+				_elm_lang$core$List$filter,
+				_mlanza$trainyard$Main$unbound(model.lowerRightCorner),
+				_mlanza$trainyard$Main$occupied(model))));
+};
+var _mlanza$trainyard$Main$invalid = function (model) {
+	return _mlanza$trainyard$Main$breach(model) || _mlanza$trainyard$Main$collisions(model);
+};
+var _mlanza$trainyard$Main$build = F4(
+	function (step, coords, count, coord) {
+		build:
+		while (true) {
+			if (_elm_lang$core$Native_Utils.eq(count, 0)) {
+				return coords;
+			} else {
+				var _v2 = step,
+					_v3 = A2(_elm_lang$core$List_ops['::'], coord, coords),
+					_v4 = count - 1,
+					_v5 = step(coord);
+				step = _v2;
+				coords = _v3;
+				count = _v4;
+				coord = _v5;
+				continue build;
+			}
+		}
+	});
+var _mlanza$trainyard$Main$add = F2(
+	function (_p7, _p6) {
+		var _p8 = _p7;
+		var _p9 = _p6;
+		return {ctor: '_Tuple2', _0: _p9._0 + _p8._0, _1: _p9._1 + _p8._1};
+	});
+var _mlanza$trainyard$Main$row = A2(
+	_mlanza$trainyard$Main$build,
+	_mlanza$trainyard$Main$add(
+		{ctor: '_Tuple2', _0: 1, _1: 0}),
+	_elm_lang$core$Native_List.fromArray(
+		[]));
+var _mlanza$trainyard$Main$col = A2(
+	_mlanza$trainyard$Main$build,
+	_mlanza$trainyard$Main$add(
+		{ctor: '_Tuple2', _0: 0, _1: 1}),
+	_elm_lang$core$Native_List.fromArray(
+		[]));
+var _mlanza$trainyard$Main$spots = F2(
+	function (coord, _p10) {
+		var _p11 = _p10;
+		return _elm_lang$core$List$sort(
+			A2(
+				_elm_lang$core$List$concatMap,
+				_mlanza$trainyard$Main$col(_p11._1),
+				A2(_mlanza$trainyard$Main$row, _p11._0, coord)));
+	});
+var _mlanza$trainyard$Main$piece = F3(
+	function (color, coord, dimensions) {
+		return {
+			color: _eskimoblood$elm_color_extra$Color_Convert$colorToHex(color),
+			coords: A2(_mlanza$trainyard$Main$spots, coord, dimensions)
+		};
+	});
+var _mlanza$trainyard$Main$init = {
+	ctor: '_Tuple2',
+	_0: {
+		lowerRightCorner: {ctor: '_Tuple2', _0: 6, _1: 6},
+		selected: _elm_lang$core$Maybe$Just(
+			_elm_lang$core$Native_Utils.chr('a')),
+		solution: _elm_lang$core$Native_List.fromArray(
+			[
+				A3(
+				_mlanza$trainyard$Main$piece,
+				_elm_lang$core$Color$red,
+				{ctor: '_Tuple2', _0: 2, _1: 3},
+				{ctor: '_Tuple2', _0: 2, _1: 1})
+			]),
+		pieces: _elm_lang$core$Native_List.fromArray(
+			[
+				{
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Maybe$Just(
+					_elm_lang$core$Native_Utils.chr('a')),
+				_1: A3(
+					_mlanza$trainyard$Main$piece,
+					_elm_lang$core$Color$red,
+					{ctor: '_Tuple2', _0: 1, _1: 3},
+					{ctor: '_Tuple2', _0: 2, _1: 1})
+			},
+				{
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Maybe$Just(
+					_elm_lang$core$Native_Utils.chr('b')),
+				_1: A3(
+					_mlanza$trainyard$Main$piece,
+					_elm_lang$core$Color$orange,
+					{ctor: '_Tuple2', _0: 0, _1: 0},
+					{ctor: '_Tuple2', _0: 1, _1: 2})
+			},
+				{
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Maybe$Just(
+					_elm_lang$core$Native_Utils.chr('c')),
+				_1: A3(
+					_mlanza$trainyard$Main$piece,
+					_elm_lang$core$Color$green,
+					{ctor: '_Tuple2', _0: 1, _1: 0},
+					{ctor: '_Tuple2', _0: 1, _1: 3})
+			}
+			])
+	},
+	_1: _elm_lang$core$Platform_Cmd$none
+};
+var _mlanza$trainyard$Main$move = F2(
+	function (offset, piece) {
+		return _elm_lang$core$Native_Utils.update(
+			piece,
+			{
+				coords: A2(
+					_elm_lang$core$List$map,
+					_mlanza$trainyard$Main$add(offset),
+					piece.coords)
+			});
+	});
+var _mlanza$trainyard$Main$moveSelected = F3(
+	function (offset, ch, _p12) {
+		var _p13 = _p12;
+		var _p15 = _p13._1;
+		var _p14 = _p13._0;
+		return {
+			ctor: '_Tuple2',
+			_0: _p14,
+			_1: _elm_lang$core$Native_Utils.eq(
+				A2(
+					_elm_lang$core$Maybe$withDefault,
+					_elm_lang$core$Native_Utils.chr(' '),
+					_p14),
+				ch) ? A2(_mlanza$trainyard$Main$move, offset, _p15) : _p15
+		};
+	});
+var _mlanza$trainyard$Main$prepend = F2(
+	function (str, prefix) {
+		return A2(_elm_lang$core$Basics_ops['++'], prefix, str);
+	});
+var _mlanza$trainyard$Main$right = {ctor: '_Tuple2', _0: 1, _1: 0};
+var _mlanza$trainyard$Main$down = {ctor: '_Tuple2', _0: 0, _1: 1};
+var _mlanza$trainyard$Main$left = {ctor: '_Tuple2', _0: -1, _1: 0};
+var _mlanza$trainyard$Main$up = {ctor: '_Tuple2', _0: 0, _1: -1};
+var _mlanza$trainyard$Main$direct = function (key) {
+	return _elm_lang$core$Native_Utils.eq(key, 39) ? _mlanza$trainyard$Main$right : (_elm_lang$core$Native_Utils.eq(key, 40) ? _mlanza$trainyard$Main$down : (_elm_lang$core$Native_Utils.eq(key, 37) ? _mlanza$trainyard$Main$left : (_elm_lang$core$Native_Utils.eq(key, 38) ? _mlanza$trainyard$Main$up : {ctor: '_Tuple2', _0: 0, _1: 0})));
+};
+var _mlanza$trainyard$Main$update = F2(
+	function (msg, model) {
+		var _p16 = msg;
+		var _p17 = _p16._0;
+		var offset = _mlanza$trainyard$Main$direct(_p17);
+		var isPiece = _elm_lang$core$Native_Utils.eq(
+			offset,
+			{ctor: '_Tuple2', _0: 0, _1: 0});
+		var ch = _elm_lang$core$Char$toLower(
+			A2(
+				_elm_lang$core$Maybe$withDefault,
+				_elm_lang$core$Native_Utils.chr(' '),
+				model.selected));
+		var proposed = _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				pieces: A2(
+					_elm_lang$core$List$map,
+					A2(_mlanza$trainyard$Main$moveSelected, offset, ch),
+					model.pieces)
+			});
+		var k = _elm_lang$core$Char$toLower(
+			_elm_lang$core$Char$fromCode(_p17));
+		return isPiece ? {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{
+					selected: _elm_lang$core$Maybe$Just(k)
+				}),
+			_1: _elm_lang$core$Platform_Cmd$none
+		} : {
+			ctor: '_Tuple2',
+			_0: _mlanza$trainyard$Main$invalid(proposed) ? model : proposed,
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
+	});
+var _mlanza$trainyard$Main$scale = 3;
+var _mlanza$trainyard$Main$ems = function (number) {
+	return A2(
+		_mlanza$trainyard$Main$prepend,
+		'em',
+		_elm_lang$core$Basics$toString(_mlanza$trainyard$Main$scale * number));
+};
+var _mlanza$trainyard$Main$Piece = F2(
+	function (a, b) {
+		return {color: a, coords: b};
+	});
+var _mlanza$trainyard$Main$Model = F4(
+	function (a, b, c, d) {
+		return {lowerRightCorner: a, selected: b, solution: c, pieces: d};
+	});
+var _mlanza$trainyard$Main$KeyUp = function (a) {
+	return {ctor: 'KeyUp', _0: a};
+};
+var _mlanza$trainyard$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$batch(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$keyboard$Keyboard$ups(_mlanza$trainyard$Main$KeyUp)
+			]));
+};
+var _mlanza$trainyard$Main$drawCoord = F5(
+	function (labeled, selected, key, color, coord) {
+		var letter = labeled ? _elm_lang$core$String$fromChar(
+			A2(
+				_elm_lang$core$Maybe$withDefault,
+				_elm_lang$core$Native_Utils.chr(' '),
+				key)) : '';
+		var kc = _elm_lang$core$Char$toCode(
+			A2(
+				_elm_lang$core$Maybe$withDefault,
+				_elm_lang$core$Native_Utils.chr(' '),
+				key));
+		var top = _mlanza$trainyard$Main$ems(
+			_elm_lang$core$Basics$snd(coord));
+		var left = _mlanza$trainyard$Main$ems(
+			_elm_lang$core$Basics$fst(coord));
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$style(
+					_elm_lang$core$Native_List.fromArray(
+						[
+							{ctor: '_Tuple2', _0: 'position', _1: 'absolute'},
+							{ctor: '_Tuple2', _0: 'top', _1: top},
+							{ctor: '_Tuple2', _0: 'left', _1: left},
+							{
+							ctor: '_Tuple2',
+							_0: 'opacity',
+							_1: selected ? '1' : '.4'
+						},
+							{ctor: '_Tuple2', _0: 'backgroundColor', _1: color},
+							{
+							ctor: '_Tuple2',
+							_0: 'height',
+							_1: _mlanza$trainyard$Main$ems(1)
+						},
+							{
+							ctor: '_Tuple2',
+							_0: 'width',
+							_1: _mlanza$trainyard$Main$ems(1)
+						}
+						])),
+					_elm_lang$html$Html_Events$onClick(
+					_mlanza$trainyard$Main$KeyUp(kc))
+				]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_mlanza$trainyard$Main$drawLabel(letter)
+				]));
+	});
+var _mlanza$trainyard$Main$drawPiece = F2(
+	function (selected, _p18) {
+		var _p19 = _p18;
+		return A2(
+			_elm_lang$core$List$indexedMap,
+			F2(
+				function (idx, coord) {
+					return A5(
+						_mlanza$trainyard$Main$drawCoord,
+						_elm_lang$core$Native_Utils.eq(idx, 0),
+						selected,
+						_p19._0,
+						_p19._1.color,
+						coord);
+				}),
+			_p19._1.coords);
+	});
+var _mlanza$trainyard$Main$board = F5(
+	function (_p20, solved, lowerRightCorner, selected, pieces) {
+		var _p21 = _p20;
+		var divs = A2(
+			_elm_lang$core$List$concatMap,
+			function (piece) {
+				return A2(
+					_mlanza$trainyard$Main$drawPiece,
+					solved || selected(piece),
+					piece);
+			},
+			pieces);
+		var border = solved ? 'solid 1px black' : 'dotted 1px gray';
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html_Attributes$style(
+					_elm_lang$core$Native_List.fromArray(
+						[
+							{ctor: '_Tuple2', _0: 'border', _1: border},
+							{
+							ctor: '_Tuple2',
+							_0: 'width',
+							_1: _mlanza$trainyard$Main$ems(
+								A2(
+									F2(
+										function (x, y) {
+											return x + y;
+										}),
+									1,
+									_elm_lang$core$Basics$fst(lowerRightCorner)))
+						},
+							{
+							ctor: '_Tuple2',
+							_0: 'height',
+							_1: _mlanza$trainyard$Main$ems(
+								A2(
+									F2(
+										function (x, y) {
+											return x + y;
+										}),
+									1,
+									_elm_lang$core$Basics$snd(lowerRightCorner)))
+						},
+							{ctor: '_Tuple2', _0: 'position', _1: 'absolute'},
+							{
+							ctor: '_Tuple2',
+							_0: 'top',
+							_1: _mlanza$trainyard$Main$ems(_p21._1)
+						},
+							{
+							ctor: '_Tuple2',
+							_0: 'left',
+							_1: _mlanza$trainyard$Main$ems(_p21._0)
+						}
+						]))
+				]),
+			divs);
+	});
+var _mlanza$trainyard$Main$view = function (model) {
+	var pos1 = {ctor: '_Tuple2', _0: 1, _1: 1};
+	var corner = function (_) {
+		return _.lowerRightCorner;
+	}(model);
+	var _p22 = corner;
+	var x = _p22._0;
+	var y = _p22._1;
+	var pos2 = A2(
+		_mlanza$trainyard$Main$add,
+		{ctor: '_Tuple2', _0: x + 2, _1: 0},
+		pos1);
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A5(
+				_mlanza$trainyard$Main$board,
+				pos1,
+				_mlanza$trainyard$Main$solved(model),
+				corner,
+				function (_p23) {
+					var _p24 = _p23;
+					return _elm_lang$core$Native_Utils.eq(model.selected, _p24._0);
+				},
+				function (_) {
+					return _.pieces;
+				}(model)),
+				A5(
+				_mlanza$trainyard$Main$board,
+				pos2,
+				true,
+				corner,
+				_mlanza$trainyard$Main$always(true),
+				A2(
+					_elm_lang$core$List$map,
+					function (piece) {
+						return {ctor: '_Tuple2', _0: _elm_lang$core$Maybe$Nothing, _1: piece};
+					},
+					function (_) {
+						return _.solution;
+					}(model)))
+			]));
+};
+var _mlanza$trainyard$Main$main = {
+	main: _elm_lang$html$Html_App$program(
+		{init: _mlanza$trainyard$Main$init, view: _mlanza$trainyard$Main$view, update: _mlanza$trainyard$Main$update, subscriptions: _mlanza$trainyard$Main$subscriptions})
+};

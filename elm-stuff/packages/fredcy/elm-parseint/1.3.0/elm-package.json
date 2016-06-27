@@ -1,0 +1,16 @@
+{
+    "version": "1.3.0",
+    "summary": "Functions to convert String to Int or Int to String in various radixes",
+    "repository": "https://github.com/fredcy/elm-parseint.git",
+    "license": "BSD3",
+    "source-directories": [
+        "src"
+    ],
+    "exposed-modules": [
+        "ParseInt"
+    ],
+    "dependencies": {
+        "elm-lang/core": "4.0.0 <= v < 5.0.0"
+    },
+    "elm-version": "0.17.0 <= v < 0.18.0"
+}
